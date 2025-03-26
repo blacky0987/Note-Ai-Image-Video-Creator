@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Image & Video Tools</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #4b6cb7;
+            --secondary: #182848;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --text: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+            transition: all 0.3s;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        /* Common Components */
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Page Styles */
+        .page {
+            display: none;
+            padding: 4rem 0;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        /* Home Page */
+        #home .hero {
+            text-align: center;
+            padding: 6rem 0;
+            background: url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80') no-repeat center/cover;
+            color: white;
+            position: relative;
+            border-radius: 10px;
+            margin-bottom: 4rem;
+        }
+        
+        #home .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            border-radius: 10px;
+        }
+        
+        #home .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        #home .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        #home .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+        }
+        
+        #home .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        #home .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        #home .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        #home .tool-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+        
+        #home .tool-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        /* Tools Page */
+        #tools .tool-demo-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+        
+        #tools .demo-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 400px;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #tools .demo-image img {
+            max-width: 100%;
+            max-height: 100%;
+            display: block;
+        }
+        
+        #tools .demo-controls {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        #tools .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        #tools label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        #tools input, 
+        #tools select, 
+        #tools textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        /* Pricing Page */
+        #pricing .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        #pricing .pricing-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        #pricing .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        #pricing .popular-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            border-bottom-left-radius: 10px;
+        }
+        
+        #pricing .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            color: var(--primary);
+        }
+        
+        #pricing .price span {
+            font-size: 1rem;
+            color: #777;
+        }
+        
+        #pricing .features-list {
+            list-style: none;
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        #pricing .features-list li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.8rem;
+        }
+        
+        #pricing .features-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #ecf0f1;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+        
+        .copyright {
+            margin-top: 1.5rem;
+            color: #bdc3c7;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #tools .tool-demo-container {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                display: flex;
+                gap: 1rem;
+            }
+            
+            .nav-links a {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">AI Creative Tools</div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link" data-page="home">Home</a>
+                    <a href="#" class="nav-link" data-page="tools">Tools</a>
+                    <a href="#" class="nav-link" data-page="pricing">Pricing</a>
+                    <a href="#" class="btn" style="margin-left: 1.5rem;">Login</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <section id="home" class="page active">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1>Create Stunning Visual Content with AI</h1>
+                    <p>Generate professional-quality images and videos in seconds with our powerful AI tools. No design skills required!</p>
+                    <a href="#" class="btn nav-link" data-page="tools">Try For Free</a>
+                </div>
+            </div>
+            
+            <h2 class="section-title">Our Popular AI Tools</h2>
+            <p class="section-subtitle">Boost your creativity with our artificial intelligence powered tools</p>
+            
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <div class="tool-icon">🖼️</div>
+                    <h3>AI Thumbnail Generator</h3>
+                    <p>Create eye-catching YouTube thumbnails automatically with AI suggestions</p>
+                    <a href="#" class="btn nav-link" data-page="tools" style="margin-top: 1rem; display: inline-block;">Try Now</a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-icon">🎨</div>
+                    <h3>Logo Designer</h3>
+                    <p>Generate professional logos in seconds based on your business description</p>
+                    <a href="#" class="btn nav-link" data-page="tools" style="margin-top: 1rem; display: inline-block;">Try Now</a>
+                </div>
+                
+                <div class="tool-card">
+                    <div class="tool-icon">🎥</div>
+                    <h3>Video Background Remover</h3>
+                    <p>Remove or replace backgrounds from your videos automatically</p>
+                    <a href="#" class="btn nav-link" data-page="tools" style="margin-top: 1rem; display: inline-block;">Try Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Page -->
+    <section id="tools" class="page">
+        <div class="container">
+            <h2 class="section-title">AI Thumbnail Generator</h2>
+            <p class="section-subtitle">Create click-worthy thumbnails for your YouTube videos in seconds</p>
+            
+            <div class="tool-demo-container">
+                <div class="demo-image">
+                    <img src="https://via.placeholder.com/600x400/4b6cb7/ffffff?text=Generated+Thumbnail" alt="AI Generated Thumbnail" id="generated-image">
+                </div>
+                
+                <div class="demo-controls">
+                    <div class="form-group">
+                        <label for="video-title">Video Title</label>
+                        <input type="text" id="video-title" placeholder="Enter your video title">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="style-select">Thumbnail Style</label>
+                        <select id="style-select">
+                            <option value="modern">Modern</option>
+                            <option value="minimal">Minimal</option>
+                            <option value="bold">Bold</option>
+                            <option value="fun">Fun</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="colors">Color Preferences (comma separated)</label>
+                        <input type="text" id="colors" placeholder="red, blue, yellow">
+                    </div>
+                    
+                    <button class="btn" id="generate-btn">Generate Thumbnail</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Page -->
+    <section id="pricing" class="page">
+        <div class="container">
+            <h2 class="section-title">Simple Pricing Plans</h2>
+            <p class="section-subtitle">Choose the perfect plan for your creative needs</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span>/month</span></div>
+                    <ul class="features-list">
+                        <li>5 image generations per day</li>
+                        <li>Watermarked outputs</li>
+                        <li>Basic tools access</li>
+                        <li>Community support</li>
+                    </ul>
+                    <button class="btn">Get Started</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <div class="popular-badge">Popular</div>
+                    <h3>Pro</h3>
+                    <div class="price">$19<span>/month</span></div>
+                    <ul class="features-list">
+                        <li>100 image generations per day</li>
+                        <li>No watermarks</li>
+                        <li>All tools included</li>
+                        <li>HD outputs</li>
+                        <li>Priority support</li>
+                    </ul>
+                    <button class="btn">Choose Plan</button>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Business</h3>
+                    <div class="price">$49<span>/month</span></div>
+                    <ul class="features-list">
+                        <li>Unlimited generations</li>
+                        <li>Commercial license</li>
+                        <li>API access</li>
+                        <li>Team collaboration</li>
+                        <li>Dedicated support</li>
+                    </ul>
+                    <button class="btn">Choose Plan</button>
+                </div>
+            </div>
+            
+            <div class="faq" style="margin-top: 5rem;">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                
+                <div class="faq-item">
+                    <div class="faq-question">What payment methods do you accept?</div>
+                    <p>We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Can I cancel my subscription anytime?</div>
+                    <p>Yes, you can cancel your subscription at any time. There are no cancellation fees.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">Do you offer discounts for non-profits?</div>
+                    <p>Yes, we offer 30% discounts for registered non-profit organizations. Contact our sales team for verification.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="logo" style="font-size: 2rem; margin-bottom: 1rem;">AI Creative Tools</div>
+            <div class="footer-links">
+                <a href="#">About Us</a>
+                <a href="#">Contact</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Help Center</a>
+            </div>
+            <p class="copyright">© 2023 AI Image & Video Tools. All rights reserved.</p>
+        </div>

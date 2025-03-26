@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Dashboard</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #4b6cb7;
+            --secondary: #182848;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --text: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--text);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Main Content */
+        .dashboard {
+            padding: 3rem 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        /* Tool Cards */
+        .tools-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .tool-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Tool Demo Sections */
+        .tool-demo {
+            margin-top: 3rem;
+            display: none;
+        }
+        
+        .tool-demo.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .demo-preview {
+            background: #eee;
+            border-radius: 10px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+        
+        .demo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 5px;
+        }
+        
+        .demo-controls {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .result-container {
+            margin-top: 2rem;
+            text-align: center;
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+        }
+        
+        /* Auth Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .auth-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .auth-tab.active {
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">AI Creative Tools</div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="#" class="active">Tools</a>
+                    <a href="pricing.html">Pricing</a>
+                    <a href="#" id="login-btn">Login</a>
+                    <a href="#" class="btn" id="signup-btn">Sign Up</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard">
+        <div class="container">
+            <h1 class="section-title">AI Tools Dashboard</h1>
+            <p>Choose a tool to generate amazing content with AI</p>
+            
+            <!-- Tool Selection Cards -->
+            <div class="tools-container">
+                <div class="tool-card" data-tool="thumbnail">
+                    <div class="tool-icon">🖼️</div>
+                    <h3 class="tool-title">Thumbnail Generator</h3>
+                    <p>Create eye-catching YouTube thumbnails in seconds</p>
+                    <button class="btn" style="margin-top: 1rem;">Use Tool</button>
+                </div>
+                
+                <div class="tool-card" data-tool="video">
+                    <div class="tool-icon">🎥</div>
+                    <h3 class="tool-title">Video Tools</h3>
+                    <p>Background removal, resizing and enhancement</p>
+                    <button class="btn" style="margin-top: 1rem;">Use Tool</button>
+                </div>
+                
+                <div class="tool-card" data-tool="logo">
+                    <div class="tool-icon">🎨</div>
+                    <h3 class="tool-title">Logo Designer</h3>
+                    <p>Generate professional logos for your brand</p>
+                    <button class="btn" style="margin-top: 1rem;">Use Tool</button>
+                </div>
+            </div>
+            
+            <!-- Thumbnail Generator Demo -->
+            <div class="tool-demo" id="thumbnail-demo">
+                <h2 class="section-title" style="margin-top: 3rem;">Thumbnail Generator</h2>
+                
+                <div class="demo-grid">
+                    <div class="demo-preview">
+                        <img src="https://via.placeholder.com/600x400/4b6cb7/ffffff?text=Thumbnail+Preview" alt="Thumbnail Preview" id="thumbnail-preview">
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <div class="form-group">
+                            <label for="thumbnail-title">Thumbnail Title</label>
+                            <input type="text" id="thumbnail-title" placeholder="Enter your video title">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="thumbnail-style">Style</label>
+                            <select id="thumbnail-style">
+                                <option value="modern">Modern</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="bold">Bold & Colorful</option>
+                                <option value="elegant">Elegant</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="thumbnail-colors">Color Scheme</label>
+                            <input type="text" id="thumbnail-colors" placeholder="e.g. blue, orange, white">
+                        </div>
+                        
+                        <button class="btn" id="generate-thumbnail">Generate Thumbnail</button>
+                    </div>
+                </div>
+                
+                <div class="result-container" id="thumbnail-result">
+                    <h3>Your Thumbnail is Ready!</h3>
+                    <div style="margin: 1rem 0;">
+                        <img src="" alt="Generated Thumbnail" id="generated-thumbnail" style="max-width: 400px; border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <button class="btn">Download</button>
+                    <button class="btn" style="background: #666; margin-left: 1rem;">Generate Another</button>
+                </div>
+            </div>
+            
+            <!-- Video Tools Demo -->
+            <div class="tool-demo" id="video-demo">
+                <h2 class="section-title" style="margin-top: 3rem;">Video Tools</h2>
+                
+                <div class="demo-grid">
+                    <div class="demo-preview">
+                        <img src="https://via.placeholder.com/600x400/182848/ffffff?text=Video+Preview" alt="Video Preview" id="video-preview">
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <div class="form-group">
+                            <label>Select Tool</label>
+                            <select id="video-tool-select">
+                                <option value="background-remover">Background Remover</option>
+                                <option value="upscaler">Quality Upscaler</option>
+                                <option value="resizer">Aspect Ratio Resizer</option>
+                                <option value="subtitles">Auto Subtitles</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="video-upload">Upload Video</label>
+                            <input type="file" id="video-upload" accept="video/*">
+                        </div>
+                        
+                        <div class="form-group" id="bg-options">
+                            <label for="bg-replacement">Background Replacement</label>
+                            <select id="bg-replacement">
+                                <option value="blur">Blur</option>
+                                <option value="white">White</option>
+                                <option value="green">Green Screen</option>
+                                <option value="custom">Custom Image</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn" id="process-video">Process Video</button>
+                    </div>
+                </div>
+                
+                <div class="result-container" id="video-result">
+                    <h3>Your Processed Video is Ready!</h3>
+                    <div style="margin: 1rem 0;">
+                        <video controls style="max-width: 400px; border-radius: 5px;">
+                            <source src="" type="video/mp4" id="processed-video">
+                        </video>
+                    </div>
+                    <button class="btn">Download</button>
+                </div>
+            </div>
+            
+            <!-- Logo Designer Demo -->
+            <div class="tool-demo" id="logo-demo">
+                <h2 class="section-title" style="margin-top: 3rem;">Logo Designer</h2>
+                
+                <div class="demo-grid">
+                    <div class="demo-preview">
+                        <img src="https://via.placeholder.com/600x400/ff6b6b/ffffff?text=Logo+Preview" alt="Logo Preview" id="logo-preview">
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <div class="form-group">
+                            <label for="company-name">Company Name</label>
+                            <input type="text" id="company-name" placeholder="Enter your company name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logo-style">Logo Style</label>
+                            <select id="logo-style">
+                                <option value="modern">Modern</option>
+                                <option value="classic">Classic</option>
+                                <option value="fun">Fun & Playful</option>
+                                <option value="minimal">Minimalist</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="industry">Industry</label>
+                            <input type="text" id="industry" placeholder="e.g. Technology, Food, Fashion">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="logo-colors">Preferred Colors (comma separated)</label>
+                            <input type="text" id="logo-colors" placeholder="e.g. blue, yellow, white">
+                        </div>
+                        
+                        <button class="btn" id="generate-logo">Generate Logo</button>
+                    </div>
+                </div>
+                
+                <div class="result-container" id="logo-result">
+                    <h3>Your Logo Designs</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0;">
+                        <img src="https://via.placeholder.com/200x200/4b6cb7/ffffff?text=Logo+1" alt="Logo Option 1" style="border: 1px solid #ddd; border-radius: 5px;">
+                        <img src="https://via.placeholder.com/200x200/ff6b6b/ffffff?text=Logo+2" alt="Logo Option 2" style="border: 1px solid #ddd; border-radius: 5px;">
+                        <img src="https://via.placeholder.com/200x200/27ae60/ffffff?text=Logo+3" alt="Logo Option 3" style="border: 1px solid #ddd; border-radius: 5px;">
+                    </div>
+                    <button class="btn">Download Selected</button>
+                    <button class="btn" style="background: #666; margin-left: 1rem;">Generate More Options</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Login</div>
+                <div class="auth-tab" data-tab="signup">Sign Up</div>
+            </div>
+            
+            <div class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <button class="btn" style="width: 100%;">Login</button>
+                <p style="text-align: center; margin-top: 1rem;">Forgot password? <a href="#" style="color: var(--primary);">Click here</a></p>
+            </div>
+            
+            <div class="auth-form" id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <input type="email"
